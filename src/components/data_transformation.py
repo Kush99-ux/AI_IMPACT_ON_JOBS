@@ -28,50 +28,49 @@ class DataTransformation:
         
         '''
         try:
-            numerical_columns = ["writing_score", "reading_score"]
+            numerical_columns = [
+                "Average_Salary", 
+                "Years_Experience", 
+                "AI_Exposure_Index", 
+                "Tech_Growth_Factor"
+            ]
             categorical_columns = [
-                "gender",
-                "race_ethnicity",
-                "parental_level_of_education",
-                "lunch",
-                "test_preparation_course",
+                "Job_Title", 
+                "Education_Level", 
+                "Risk_Category",
+                "Skill_1", "Skill_2", "Skill_3", "Skill_4", "Skill_5",
+                "Skill_6", "Skill_7", "Skill_8", "Skill_9", "Skill_10"
             ]
 
-            num_pipeline= Pipeline(
+            num_pipeline = Pipeline(
                 steps=[
-                ("imputer",SimpleImputer(strategy="median")),
-                ("scaler",StandardScaler())
-
+                    ("imputer", SimpleImputer(strategy="median")),
+                    ("scaler", StandardScaler())
                 ]
             )
 
-            cat_pipeline=Pipeline(
-
+            cat_pipeline = Pipeline(
                 steps=[
-                ("imputer",SimpleImputer(strategy="most_frequent")),
-                ("one_hot_encoder",OneHotEncoder()),
-                ("scaler",StandardScaler(with_mean=False))
+                    ("imputer", SimpleImputer(strategy="most_frequent")),
+                    ("one_hot_encoder", OneHotEncoder(handle_unknown='ignore')),
+                    ("scaler", StandardScaler(with_mean=False))
                 ]
-
             )
 
             logging.info(f"Categorical columns: {categorical_columns}")
             logging.info(f"Numerical columns: {numerical_columns}")
 
-            preprocessor=ColumnTransformer(
+            preprocessor = ColumnTransformer(
                 [
-                ("num_pipeline",num_pipeline,numerical_columns),
-                ("cat_pipelines",cat_pipeline,categorical_columns)
-
+                    ("num_pipeline", num_pipeline, numerical_columns),
+                    ("cat_pipelines", cat_pipeline, categorical_columns)
                 ]
-
-
             )
 
             return preprocessor
         
         except Exception as e:
-            raise CustomException(e,sys)
+            raise CustomException(e, sys)
         
     def initiate_data_transformation(self,train_path,test_path):
 
@@ -85,8 +84,22 @@ class DataTransformation:
 
             preprocessing_obj=self.get_data_transformer_object()
 
-            target_column_name="math_score"
-            numerical_columns = ["writing_score", "reading_score"]
+            # Define your target and feature columns
+            target_column_name="Automation_Probability_2030"
+            # Numerical features for scaling
+            numerical_columns = ["Average_Salary", 
+                    "Years_Experience", 
+                    "AI_Exposure_Index", 
+                    "Tech_Growth_Factor"]
+            
+            # Categorical features for encoding
+            categorical_columns = [
+                "Job_Title", 
+                "Education_Level", 
+                "Risk_Category",
+                "Skill_1", "Skill_2", "Skill_3", "Skill_4", "Skill_5",
+                "Skill_6", "Skill_7", "Skill_8", "Skill_9", "Skill_10"
+            ]
 
             input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[target_column_name]
@@ -98,8 +111,12 @@ class DataTransformation:
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
 
-            input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
-            input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
+            raw_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
+            raw_test_arr = preprocessing_obj.transform(input_feature_test_df)
+
+            input_feature_train_arr = raw_train_arr.toarray() if hasattr(raw_train_arr, "toarray") else raw_train_arr
+            
+            input_feature_test_arr = raw_test_arr.toarray() if hasattr(raw_test_arr, "toarray") else raw_test_arr
 
             train_arr = np.c_[
                 input_feature_train_arr, np.array(target_feature_train_df)

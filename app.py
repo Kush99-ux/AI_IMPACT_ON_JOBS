@@ -21,25 +21,28 @@ def predict_datapoint():
         return render_template('home.html')
     else:
         data = CustomData(
-            gender=request.form.get('gender'),
-            race_ethnicity=request.form.get('ethnicity'),
-            parental_level_of_education=request.form.get('parental_level_of_education'),
-            lunch=request.form.get('lunch'),
-            test_preparation_course=request.form.get('test_preparation_course'),
-            reading_score=float(request.form.get('writing_score')),
-            writing_score=float(request.form.get('reading_score'))
+            Job_Title=request.form.get('Job_Title'),
+            Average_Salary=int(request.form.get('Average_Salary')),
+            Years_Experience=int(request.form.get('Years_Experience')),
+            Education_Level=request.form.get('Education_Level'),
+            AI_Exposure_Index=float(request.form.get('AI_Exposure_Index')),
+            Tech_Growth_Factor=float(request.form.get('Tech_Growth_Factor')),
+            Risk_Category=request.form.get('Risk_Category'),
+            Skill_1=request.form.get('Skill_1'), Skill_2=request.form.get('Skill_2'),
+            Skill_3=request.form.get('Skill_3'), Skill_4=request.form.get('Skill_4'),
+            Skill_5=request.form.get('Skill_5'), Skill_6=request.form.get('Skill_6'),
+            Skill_7=request.form.get('Skill_7'), Skill_8=request.form.get('Skill_8'),
+            Skill_9=request.form.get('Skill_9'), Skill_10=request.form.get('Skill_10')
         )
 
         pred_df=data.get_data_as_data_frame()
         print(pred_df)
-        print("Before Prediction")
-
+        
         predict_pipeline=PredictPipeline()
-        print("Mid Prediction")
-
         results=predict_pipeline.predict(pred_df)
-        print("after Prediction")
-        return render_template('home.html',results=results[0])
+        
+        # results[0] contains the Automation Probability percentage
+        return render_template('home.html', results=round(results[0], 2))
     
 if __name__=="__main__":
     app.run(host="0.0.0.0",debug=True) 

@@ -19,7 +19,7 @@ def get_requirements(file_path:str)->List[str]:
 
 
 setup(
-    name='MLProject',
+    name='AI_IMPACT_ON_JOBS',
     version='0.0.1',
     author='Kush',
     author_email='Kushs0985@gmail.com',
