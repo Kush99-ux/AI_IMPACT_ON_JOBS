@@ -1,4 +1,5 @@
 AI Job Impact Predictor 2030
+
 This project is a Machine Learning application designed to estimate the probability of various job roles being automated by the year 2030. It analyzes specific metrics such as salary, years of experience, and a diverse set of professional skills to provide a data-driven risk assessment.
 
 Project Overview
